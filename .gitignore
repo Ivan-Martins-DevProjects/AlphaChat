@@ -1,0 +1,85 @@
+# =========================
+# ASP.NET / .NET
+# =========================
+
+bin/
+obj/
+
+*.user
+*.rsuser
+*.suo
+
+.vs/
+.idea/
+.vscode/
+
+TestResults/
+coverage/
+coverage-report/
+
+publish/
+
+*.log
+
+# Secrets
+.env
+appsettings.Development.json
+secrets.json
+
+# NuGet
+packages/
+*.nupkg
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# SSL / Certificates
+*.pfx
+*.pem
+*.key
+
+# Redis
+dump.rdb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# =========================
+# Angular
+# =========================
+
+node_modules/
+
+dist/
+.angular/
+.cache/
+
+package-lock.json
+
+# Angular logs
+angular-errors.log
+
+# Environment
+src/environments/environment*.local.ts
+
+# Package managers
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+.history/
+
+# Compiled frontend
+wwwroot/dist/
+wwwroot/build/
+
+# =========================
+# MiMoCode
+# =========================
+.mimocode/
+cookies.txt

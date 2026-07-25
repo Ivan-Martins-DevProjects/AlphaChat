@@ -1,0 +1,18 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="onBackdropClick($event)">
+  <div class="modal-container" [ngClass]="type">
+    <button class="modal-close" (click)="onClose()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-icon-wrapper" [ngClass]="type">
+      <i *ngIf="type === 'error'" class="fa-solid fa-circle-exclamation"></i>
+      <i *ngIf="type === 'success'" class="fa-solid fa-circle-check"></i>
+      <i *ngIf="type === 'warning'" class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <h3 class="modal-title">{{ title }}</h3>
+    <p class="modal-message">{{ message }}</p>
+
+    <button class="modal-button" [ngClass]="type" (click)="onClose()">Entendi</button>
+  </div>
+</div>

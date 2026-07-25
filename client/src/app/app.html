@@ -1,0 +1,20 @@
+<div class="body">
+	<div class="layout" *ngIf="!isLoginPage">
+<button
+  class="mobileMenu"
+  [class.open]="sidebarOpen"
+  (click)="toggleSidebar()"
+>
+  <i class="fa fa-bars"></i>
+</button>
+
+<app-sidebar
+      [open]="sidebarOpen"
+      (closeSideBar)="sidebarOpen = false"
+    ></app-sidebar>
+	</div>
+
+	<div class="content">
+		<router-outlet/>
+	</div>
+</div>

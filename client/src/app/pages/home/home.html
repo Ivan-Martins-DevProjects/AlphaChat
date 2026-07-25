@@ -1,0 +1,14 @@
+<div class="conversations">
+	<app-conversations
+		[tickets]="tickets"
+		[isLoading]="isLoading"
+		[isLoadingMore]="isLoadingMore"
+		[hasMore]="hasMore"
+		[currentUserId]="currentUserId"
+		(loadMore)="loadMore()"
+	/>
+	<app-chat-content
+		[initialConversationId]="initialConversationId"
+		(contactUpdated)="onContactUpdated()"
+	/>
+</div>

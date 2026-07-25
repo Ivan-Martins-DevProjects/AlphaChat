@@ -1,0 +1,214 @@
+<div class="contacts-page">
+  <div class="page-header">
+    <div class="header-left">
+      <h1>Todos os Contatos</h1>
+      <span class="contact-count">{{totalCount}} contatos</span>
+    </div>
+    <button class="add-contact-btn" (click)="addContact()">
+      <i class="fa fa-plus"></i>
+      <span>Adicionar contato</span>
+    </button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="search-input">
+      <i class="fa fa-search"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Buscar por nome ou telefone..."
+      />
+    </div>
+
+    <div class="company-filter">
+      <button class="filter-btn" (click)="showCompanyDropdown = !showCompanyDropdown">
+        <i class="fa fa-building"></i>
+        <span>{{selectedCompany || 'Empresa'}}</span>
+        <i class="fa fa-chevron-down"></i>
+      </button>
+
+      @if(showCompanyDropdown) {
+        <div class="filter-dropdown">
+          <div class="dropdown-search">
+            <input
+              type="text"
+              [(ngModel)]="companySearchQuery"
+              placeholder="Buscar empresa..."
+            />
+          </div>
+          <div class="dropdown-list">
+            @if(selectedCompany) {
+              <div class="dropdown-item clear" (click)="clearCompany()">
+                <i class="fa fa-times"></i>
+                <span>Limpar seleção</span>
+              </div>
+            }
+            @for(company of getFilteredCompanies(); track company) {
+              <div
+                class="dropdown-item"
+                [class.active]="selectedCompany === company"
+                (click)="onCompanySelect(company)">
+                <span>{{company}}</span>
+                @if(selectedCompany === company) {
+                  <i class="fa fa-check"></i>
+                }
+              </div>
+            }
+            @if(getFilteredCompanies().length === 0) {
+              <div class="dropdown-item empty">Nenhuma empresa encontrada</div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="tags-filter">
+      <button class="filter-btn" (click)="showTagDropdown = !showTagDropdown">
+        <i class="fa fa-tags"></i>
+        <span>{{getSelectedTagName() || 'Tags'}}</span>
+        <i class="fa fa-chevron-down"></i>
+      </button>
+
+      @if(showTagDropdown) {
+        <div class="filter-dropdown">
+          <div class="dropdown-search">
+            <input
+              type="text"
+              [(ngModel)]="tagSearchQuery"
+              placeholder="Buscar tag..."
+            />
+          </div>
+          <div class="dropdown-list">
+            @if(selectedTagId) {
+              <div class="dropdown-item clear" (click)="clearTag()">
+                <i class="fa fa-times"></i>
+                <span>Limpar seleção</span>
+              </div>
+            }
+            @for(tag of getFilteredTags(); track tag.id) {
+              <div
+                class="dropdown-item"
+                [class.active]="selectedTagId === tag.id"
+                (click)="onTagSelect(tag.id)">
+                <span class="tag-dot" [style.background-color]="tag.colorCode"></span>
+                <span>{{tag.name}}</span>
+                @if(selectedTagId === tag.id) {
+                  <i class="fa fa-check"></i>
+                }
+              </div>
+            }
+            @if(getFilteredTags().length === 0) {
+              <div class="dropdown-item empty">Nenhuma tag encontrada</div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if(hasActiveFilters()) {
+      <button class="clear-filters-btn" (click)="clearAllFilters()">
+        <i class="fa fa-times"></i>
+        Limpar filtros
+      </button>
+    }
+  </div>
+
+  @if(isLoading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Carregando contatos...</span>
+    </div>
+  }
+
+  @if(error) {
+    <div class="error-container">
+      <i class="fa fa-exclamation-triangle"></i>
+      <span>{{error}}</span>
+    </div>
+  }
+
+  @if(!isLoading && !error) {
+    <div class="contacts-list">
+      @for(contact of contacts; track contact.contactId) {
+        <div class="contact-card">
+          <img class="contact-avatar" [src]="getAvatar(contact)" [alt]="contact.name">
+          <div class="contact-info">
+            <span class="contact-name">{{contact.name || 'Sem nome'}}</span>
+            <span class="contact-phone">{{formatPhone(contact.phone)}}</span>
+            <div class="contact-tags">
+              @for(tag of contact.tags; track tag.id) {
+                <span class="tag" [style.background-color]="tag.colorCode + '20'" [style.color]="tag.colorCode">
+                  {{tag.name}}
+                </span>
+              }
+            </div>
+          </div>
+          <span class="contact-company">{{contact.company || '-'}}</span>
+          <div class="contact-actions">
+            <button class="action-btn edit-btn" (click)="editContact(contact.contactId); $event.stopPropagation()" title="Editar contato">
+              <i class="fa fa-pencil"></i>
+            </button>
+            <button class="action-btn chat-btn" (click)="openChat(contact.contactId); $event.stopPropagation()" title="Enviar mensagem">
+              <i class="fa fa-comments"></i>
+            </button>
+          </div>
+        </div>
+      }
+
+      @if(contacts.length === 0) {
+        <div class="empty-container">
+          <i class="fa fa-users"></i>
+          <span>Nenhum contato encontrado</span>
+        </div>
+      }
+    </div>
+
+    @if(totalPages > 1) {
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+
+        <span class="page-info">{{currentPage}} / {{totalPages}}</span>
+
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
+    }
+  }
+</div>
+
+<!-- CLICK OUTSIDE TO CLOSE DROPDOWN -->
+@if(showCompanyDropdown || showTagDropdown) {
+  <div class="dropdown-overlay" (click)="showCompanyDropdown = false; showTagDropdown = false"></div>
+}
+
+<!-- EDIT CONTACT MODAL -->
+@if(showEditModal) {
+  <app-edit-contact-modal
+    [contactId]="editingContactId"
+    [contactData]="editingContactData"
+    (close)="closeEditModal()"
+    (saved)="onContactSaved()"
+  />
+}
+
+<!-- SEND MESSAGE MODAL -->
+@if(showSendMessageModal) {
+  <app-send-message-modal
+    [contactId]="sendMessageContactId"
+    (close)="closeSendMessageModal()"
+    (sent)="onMessageSent()"
+  />
+}
+
+<!-- CREATE CONTACT MODAL -->
+@if(showCreateModal) {
+  <app-create-contact-modal
+    (close)="closeCreateModal()"
+    (created)="onContactCreated()"
+  />
+}

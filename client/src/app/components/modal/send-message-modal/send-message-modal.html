@@ -1,0 +1,71 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h3>Enviar Mensagem</h3>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body">
+      @if(error) {
+        <div class="error-container">
+          <i class="fa fa-exclamation-triangle"></i>
+          <span>{{error}}</span>
+        </div>
+      }
+
+      @if(!error && !showOpenTicketDialog) {
+        <div class="message-form">
+          <label class="form-label">Mensagem</label>
+          <textarea
+            class="message-input"
+            [(ngModel)]="message"
+            placeholder="Digite sua mensagem..."
+            rows="4"
+            autofocus
+          ></textarea>
+        </div>
+      }
+
+      @if(showOpenTicketDialog) {
+        <div class="open-ticket-dialog">
+          <div class="dialog-icon">
+            <i class="fa fa-info-circle"></i>
+          </div>
+          <p class="dialog-text">Já existe uma conversa aberta com este contato.</p>
+          <p class="dialog-subtext">Deseja continuar na conversa existente?</p>
+        </div>
+      }
+    </div>
+
+    <!-- FOOTER -->
+    @if(!error) {
+      <div class="modal-footer">
+        @if(showOpenTicketDialog) {
+          <button class="btn-cancel" (click)="cancelOpenTicketDialog()">Voltar</button>
+          <button class="btn-send" [disabled]="isSending" (click)="goToExistingConversation()">
+            @if(isSending) {
+              <div class="btn-spinner"></div>
+            } @else {
+              <i class="fa fa-comments"></i>
+            }
+            <span>Ir para conversa</span>
+          </button>
+        } @else {
+          <button class="btn-cancel" (click)="onClose()">Cancelar</button>
+          <button class="btn-send" [disabled]="!message.trim() || isSending" (click)="send()">
+            @if(isSending) {
+              <div class="btn-spinner"></div>
+            } @else {
+              <i class="fa fa-paper-plane"></i>
+            }
+            <span>Enviar</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

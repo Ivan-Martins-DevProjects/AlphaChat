@@ -1,0 +1,26 @@
+.mobileMenu {
+  display: flex;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 2000;
+  background:
+    linear-gradient(180deg,
+      rgba(17, 34, 64, 0.98) 0%,
+      rgba(11, 18, 32, 0.98) 100%);
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+i {
+  font-size: 15px;
+}
+
+.mobileMenu.open {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  transform: translateX(210px);
+}

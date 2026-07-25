@@ -1,0 +1,73 @@
+<div class="sidebar" [class.open]="open">
+
+  <div class="logo">
+    @if (open) {
+      AlphaChat
+    }
+  </div>
+
+  <hr>
+
+  <div class="menu body">
+    @for (item of BodyItems; track item.id) {
+
+      <div
+        class="menu-item"
+        [class.active]="activeItem === item.id"
+        [class.has-children]="item.children"
+        (click)="setActive(item.id)">
+
+        <i [class]="item.icon"></i>
+
+        @if (open) {
+          <span>{{ item.id }}</span>
+        }
+
+        @if (open && item.children) {
+          <i
+            class="fa fa-chevron-right chevron"
+            [class.active]="activeItem === item.id">
+          </i>
+        }
+
+      </div>
+
+      @if (open && activeItem === item.id && item.children) {
+        <div class="submenu">
+          @for (sub of item.children; track sub.id) {
+            <div
+              class="submenu-item"
+              [class.active]="activeSubItem === sub.id"
+              (click)="setSubActive(sub)">
+              <i [class]="sub.icon"></i>
+              <span>{{ sub.id }}</span>
+            </div>
+          }
+        </div>
+      }
+
+    }
+  </div>
+
+  <div class="menu footer">
+
+    @for (item of FooterItems; track item.id) {
+
+      <div
+        class="menu-item"
+        [class.active]="activeItem === item.id"
+        (click)="setActive(item.id)">
+
+        <i [class]="item.icon"></i>
+
+        @if (open) {
+          <span>{{ item.id }}</span>
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

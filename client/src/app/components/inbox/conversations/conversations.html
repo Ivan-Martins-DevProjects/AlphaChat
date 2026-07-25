@@ -1,0 +1,106 @@
+<div class="content">
+	<div class="list" #listContainer (scroll)="onScroll()">
+		<div class="header">
+			<div class="title">
+				<h1>Conversas</h1>
+				<span>{{filteredTickets.length}} {{activeFilter === 'all' ? 'total' : 'encontradas'}}</span>
+			</div>
+			<div class="actions">
+				<button>
+					<i class="fa fa-filter"></i>
+				</button>
+
+				<button>
+					<i class="fa fa-sort"></i>
+				</button>
+			</div>
+		</div>
+    <div class="subheader-container">
+      <div class="search-container">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Buscar conversas...">
+        <div class="filter-dropdown">
+          <button class="filter-trigger" (click)="showFilterDropdown = !showFilterDropdown">
+            <i class="fa fa-sliders-h"></i>
+          </button>
+          @if(showFilterDropdown) {
+            <div class="filter-menu">
+              @for(filter of filters; track filter.id) {
+                <div class="filter-option" [class.active]="activeFilter === filter.id" (click)="setActiveFilter(filter.id); showFilterDropdown = false">
+                  <i class="fa" [ngClass]="filter.icon"></i>
+                  <span>{{filter.label}}</span>
+                  <span class="filter-badge">{{getFilterCount(filter.id)}}</span>
+                  @if(activeFilter === filter.id) {
+                    <i class="fa fa-check filter-check"></i>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="active-filter-bar">
+        @for(filter of filters; track filter.id) {
+          @if(activeFilter === filter.id) {
+            <span class="active-filter-tag">
+              <i class="fa" [ngClass]="filter.icon"></i>
+              {{filter.label}}
+              <span class="tag-count">{{getFilterCount(filter.id)}}</span>
+            </span>
+          }
+        }
+        @if(activeFilter !== 'all') {
+          <button class="clear-filter" (click)="setActiveFilter('all')">
+            <i class="fa fa-times"></i> Limpar
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <span>Carregando conversas...</span>
+      </div>
+    } @else if (filteredTickets.length === 0) {
+      <div class="empty-state">
+        <i class="fa-regular fa-comments"></i>
+        <p>Nenhuma conversa encontrada</p>
+      </div>
+    } @else {
+      @for (ticket of filteredTickets; track ticket.ticketId) {
+        <div class="conversation-card" [class.has-new-message]="isHighlighted(ticket.conversationId)" [class.unread]="!ticket.read" (click)="onSelect(ticket)">
+          <img class="avatar" [src]="getAvatar(ticket)" alt="User Avatar">
+          @if(!ticket.read) {
+            <span class="unread-dot"></span>
+          }
+          <div class="conversation-content">
+            <div class="conversation-header">
+              <div class="user-info">
+                <h3>{{formatDisplayName(ticket)}}</h3>
+                <div class="tags">
+                  @for (tag of getValidTags(ticket); track tag.id) {
+                    <span class="tag" [style.color]="tag.colorCode" [style.background-color]="tag.colorCode + '15'">{{tag.name}}</span>
+                  }
+                </div>
+              </div>
+              <span class="time">{{formatTime(ticket.lastMessageCreatedAt)}}</span>
+            </div>
+            <div class="last-message-row">
+              <p class="last-message">
+                {{ticket.lastMessageContent || ticket.subject}}
+              </p>
+              <span class="status-badge" [class]="'status-' + ticket.status">{{formatStatus(ticket.status)}}</span>
+            </div>
+          </div>
+        </div>
+      }
+      @if(isLoadingMore) {
+        <div class="loading-more">
+          <div class="loading-spinner-small"></div>
+          <span>Carregando mais...</span>
+        </div>
+      }
+    }
+	</div>
+</div>

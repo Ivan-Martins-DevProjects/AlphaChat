@@ -1,0 +1,112 @@
+<div class="content">
+	<div class="body">
+
+		<!-- EMPTY STATE -->
+		@if(!activeChat) {
+			<div class="empty-state-container">
+				<div class="empty-state-content">
+					<div class="icon-box">
+						<i class="fa fa-comments-o"></i>
+					</div>
+					<h1>Nada por aqui ainda</h1>
+					<p>Selecione uma conversa na lista lateral para visualizar as mensagens e começar a interagir.</p>
+					<div class="status-badge">
+						<span class="dot"></span> Aguardando seleção
+					</div>
+				</div>
+			</div>
+		}
+
+		@if(activeChat) {
+			<!-- CHAT HEADER -->
+			<div class="chat-header">
+				<div class="contact-info" (click)="toggleContactInfo()" style="cursor: pointer;">
+					<img class="contact-avatar" [src]="getContactAvatar()" [alt]="activeChat.contactDisplayName">
+					<div class="contact-details">
+						<h2>{{formatDisplayName(activeChat)}}</h2>
+						<span class="status online">Online</span>
+					</div>
+				</div>
+
+				<div class="chat-actions">
+					<button>
+						<i class="fa fa-phone"></i>
+					</button>
+					<button>
+						<i class="fa fa-video-camera"></i>
+					</button>
+					<button>
+						<i class="fa fa-ellipsis-v"></i>
+					</button>
+				</div>
+			</div>
+
+			<!-- MESSAGES -->
+			<div class="messages" #messagesContainer (scroll)="onScroll()">
+				@if(isLoadingMessages && messages.length === 0) {
+					<div class="messages-loading">
+						<div class="loading-spinner"></div>
+						<span>Carregando mensagens...</span>
+					</div>
+				}
+
+				@if(!isLoadingMessages && messages.length === 0) {
+					<div class="no-messages">
+						<p>Nenhuma mensagem ainda</p>
+					</div>
+				}
+
+				@for(message of messages; track message.id) {
+					<div class="message-wrapper" [class.sent]="isOwnMessage(message)" [class.received]="!isOwnMessage(message)" [class.new-message]="isNewMessage(message.id)">
+						<div class="message">
+							<p class="message-content">{{message.content}}</p>
+							<div class="message-footer">
+								<span class="message-time">{{formatTime(message.createdAt)}}</span>
+								@if(isOwnMessage(message)) {
+									<i class="fa fa-check"></i>
+								}
+							</div>
+						</div>
+					</div>
+				}
+
+				@if(isLoadingMessages && messages.length > 0) {
+					<div class="loading-more">
+						<div class="loading-spinner-small"></div>
+					</div>
+				}
+			</div>
+
+			<!-- INPUT -->
+			<div class="chat-input-container">
+				<div class="input-actions">
+					<button class="action-btn">
+						<i class="fa fa-paperclip"></i>
+					</button>
+					<button class="action-btn">
+						<i class="fa fa-image"></i>
+					</button>
+					<button class="action-btn">
+						<i class="fa fa-microphone"></i>
+					</button>
+				</div>
+
+				<div class="message-input-wrapper">
+					<input
+						type="text"
+						placeholder="Type a message..."
+						[(ngModel)]="inputMessage"
+						(keyup.enter)="addNewMessage()"
+					/>
+					<button class="send-btn" (click)="addNewMessage()">
+						<i class="fa fa-paper-plane"></i>
+					</button>
+				</div>
+			</div>
+		}
+	</div>
+
+	@if(showContactInfo && activeChat) {
+		<app-contact-info [conversationId]="activeChat.conversationId" [currentUserId]="currentUserId" (close)="closeContactInfo()" (saved)="onContactSaved()"/>
+	}
+</div>

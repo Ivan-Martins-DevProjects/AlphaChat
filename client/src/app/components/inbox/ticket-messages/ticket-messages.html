@@ -1,0 +1,35 @@
+<div class="ticket-messages-container" #messagesContainer (scroll)="onScroll()">
+  @if(isLoading && messages.length === 0) {
+    <div class="messages-loading">
+      <div class="loading-spinner"></div>
+      <span>Carregando mensagens...</span>
+    </div>
+  }
+
+  @if(!isLoading && messages.length === 0) {
+    <div class="no-messages">
+      <i class="fa fa-comments"></i>
+      <p>Nenhuma mensagem nesta conversa</p>
+    </div>
+  }
+
+  @for(message of messages; track message.id) {
+    <div class="message-wrapper" [class.sent]="isOwnMessage(message)" [class.received]="!isOwnMessage(message)">
+      <div class="message">
+        <p class="message-content">{{message.content}}</p>
+        <div class="message-footer">
+          <span class="message-time">{{formatTime(message.createdAt)}}</span>
+          @if(isOwnMessage(message)) {
+            <i class="fa fa-check"></i>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if(isLoading && messages.length > 0) {
+    <div class="loading-more">
+      <div class="loading-spinner-small"></div>
+    </div>
+  }
+</div>

@@ -1,0 +1,81 @@
+<app-modal [isOpen]="showModal" [title]="modalTitle" [message]="modalMessage" [type]="modalType"
+  (close)="closeModal()"></app-modal>
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="logo">
+        <i class="fa-regular fa-comments"></i>
+        Alpha Chat
+      </div>
+      <p class="subtitle">Bem-vindo de volta</p>
+    </div>
+
+    <form class="login-form" (submit)="onSubmit($event)">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper" [class.error]="emailError">
+          <i class="fa-regular fa-envelope"></i>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="seu@email.com"
+            [(ngModel)]="email"
+            (blur)="onEmailBlur()"
+          />
+        </div>
+        <span class="field-error" *ngIf="emailError">{{ emailError }}</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <div class="input-wrapper" [class.error]="passwordError">
+          <i class="fa-regular fa-lock"></i>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            [(ngModel)]="password"
+            (blur)="onPasswordBlur()"
+          />
+        </div>
+        <span class="field-error" *ngIf="passwordError">{{ passwordError }}</span>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" name="remember" [(ngModel)]="remember" />
+          <span>Lembrar de mim</span>
+        </label>
+        <a href="#" class="forgot-link">Esqueceu a senha?</a>
+      </div>
+
+      <button type="submit" class="login-button" [disabled]="isLoading || !isFormValid">
+        <span *ngIf="!isLoading">Entrar</span>
+        <span *ngIf="isLoading" class="loading-spinner"></span>
+      </button>
+
+      <div class="divider">
+        <span>ou continue com</span>
+      </div>
+
+      <div class="social-login">
+        <button type="button" class="social-button">
+          <i class="fa-brands fa-google"></i>
+        </button>
+        <button type="button" class="social-button">
+          <i class="fa-brands fa-github"></i>
+        </button>
+        <button type="button" class="social-button">
+          <i class="fa-brands fa-microsoft"></i>
+        </button>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      <p>Não tem uma conta? <a href="#">Criar conta</a></p>
+    </div>
+  </div>
+</div>

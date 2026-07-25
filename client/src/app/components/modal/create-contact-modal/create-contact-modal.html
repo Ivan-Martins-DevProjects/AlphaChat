@@ -1,0 +1,155 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h3>Novo Contato</h3>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body">
+      @if(error) {
+        <div class="error-banner">
+          <i class="fa fa-exclamation-triangle"></i>
+          <span>{{error}}</span>
+        </div>
+      }
+
+      <!-- NAME -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-user"></i>
+          <span>Nome *</span>
+        </div>
+        <input
+          class="edit-input"
+          type="text"
+          [(ngModel)]="name"
+          placeholder="Nome do contato"
+          autofocus
+        />
+      </div>
+
+      <!-- PHONE -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-phone"></i>
+          <span>Telefone</span>
+        </div>
+        <input
+          class="edit-input"
+          type="text"
+          [(ngModel)]="phone"
+          placeholder="(00) 00000-0000"
+        />
+      </div>
+
+      <!-- EMAIL -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-envelope"></i>
+          <span>Email</span>
+        </div>
+        <input
+          class="edit-input"
+          type="email"
+          [(ngModel)]="email"
+          placeholder="email@exemplo.com"
+        />
+      </div>
+
+      <!-- COMPANY -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-building"></i>
+          <span>Empresa</span>
+        </div>
+        <input
+          class="edit-input"
+          type="text"
+          [(ngModel)]="company"
+          placeholder="Nome da empresa"
+        />
+      </div>
+
+      <!-- DOCUMENT -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-id-card"></i>
+          <span>Documento</span>
+        </div>
+        <input
+          class="edit-input"
+          type="text"
+          [(ngModel)]="document"
+          placeholder="CPF/CNPJ"
+        />
+      </div>
+
+      <!-- NOTES -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-sticky-note"></i>
+          <span>Observações</span>
+        </div>
+        <textarea
+          class="edit-input edit-textarea"
+          [(ngModel)]="notes"
+          placeholder="Notas sobre o contato..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- TAGS -->
+      <div class="section">
+        <div class="section-header">
+          <i class="fa fa-tags"></i>
+          <span>Tags</span>
+        </div>
+        <div class="tags-container">
+          @for(tag of selectedTags; track tag.id) {
+            <span class="tag" [style.background-color]="tag.colorCode + '20'" [style.color]="tag.colorCode" [style.border-color]="tag.colorCode + '40'">
+              {{tag.name}}
+              <button class="tag-remove" (click)="removeTag(tag.id)">
+                <i class="fa fa-times"></i>
+              </button>
+            </span>
+          }
+          <div class="tag-add-wrapper">
+            <button class="tag-add-btn" (click)="showTagDropdown = !showTagDropdown">
+              <i class="fa fa-plus"></i>
+            </button>
+            @if(showTagDropdown) {
+              <div class="tag-dropdown">
+                @for(tag of getAvailableTags(); track tag.id) {
+                  <div class="tag-option" (click)="addTag(tag)">
+                    <span class="tag-dot" [style.background-color]="tag.colorCode"></span>
+                    {{tag.name}}
+                  </div>
+                }
+                @if(getAvailableTags().length === 0) {
+                  <div class="tag-option empty">Nenhuma tag disponível</div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="onClose()">Cancelar</button>
+      <button class="btn-save" [disabled]="!name.trim() || isSaving" (click)="save()">
+        @if(isSaving) {
+          <div class="btn-spinner"></div>
+        } @else {
+          <i class="fa fa-check"></i>
+        }
+        <span>Salvar</span>
+      </button>
+    </div>
+  </div>
+</div>

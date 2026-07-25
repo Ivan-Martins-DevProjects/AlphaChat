@@ -1,0 +1,132 @@
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.ticket-messages-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(94, 234, 212, 0.18) transparent;
+}
+
+.ticket-messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ticket-messages-container::-webkit-scrollbar-thumb {
+  background: rgba(94, 234, 212, 0.18);
+  border-radius: 10px;
+}
+
+/* MESSAGES */
+
+.message-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.message-wrapper.received {
+  justify-content: flex-start;
+}
+
+.message-wrapper.sent {
+  justify-content: flex-end;
+}
+
+.message {
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  word-break: break-word;
+}
+
+.message-wrapper.received .message {
+  background: rgba(255, 255, 255, 0.06);
+  border-top-left-radius: 4px;
+  color: #f8fafc;
+}
+
+.message-wrapper.sent .message {
+  background: linear-gradient(135deg, #0f766e, #134e4a);
+  border-top-right-radius: 4px;
+  color: white;
+}
+
+.message-content {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.message-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.message-footer i {
+  font-size: 10px;
+}
+
+/* LOADING */
+
+.messages-loading,
+.no-messages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.no-messages i {
+  font-size: 24px;
+  color: #475569;
+}
+
+.no-messages p {
+  margin: 0;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(94, 234, 212, 0.2);
+  border-radius: 50%;
+  border-top-color: #5eead4;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+.loading-spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(94, 234, 212, 0.2);
+  border-radius: 50%;
+  border-top-color: #5eead4;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
