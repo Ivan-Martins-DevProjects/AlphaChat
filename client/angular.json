@@ -63,11 +63,7 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "ssl": true,
-            "sslCert": "certs/cert.pem",
-            "sslKey": "certs/key.pem"
-          },
+          "options": {},
           "configurations": {
             "production": {
               "buildTarget": "alpha-chat-client:build:production"
