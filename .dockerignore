@@ -1,0 +1,9 @@
+node_modules
+client/node_modules
+client/dist
+server/bin
+server/obj
+websockets/bin
+websockets/obj
+.git
+**/.angular

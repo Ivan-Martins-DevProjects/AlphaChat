@@ -53,7 +53,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("https://localhost:4200")
+        policy.WithOrigins("https://localhost:4200", "http://localhost:4003")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -102,7 +102,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Docker"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("Frontend");
 

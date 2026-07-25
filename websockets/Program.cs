@@ -3,17 +3,31 @@ using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel(options =>
+var port = builder.Configuration.GetValue<string>("PORT") ?? "5272";
+var certPath = builder.Configuration.GetValue<string>("CERT_PATH");
+var keyPath = builder.Configuration.GetValue<string>("KEY_PATH");
+
+if (!string.IsNullOrEmpty(certPath) && !string.IsNullOrEmpty(keyPath))
 {
-    options.ListenLocalhost(7233, listenOptions =>
+    builder.WebHost.ConfigureKestrel(options =>
     {
-        listenOptions.UseHttps(httpsOptions =>
+        options.ListenLocalhost(int.Parse(port), listenOptions =>
         {
-            var cert = X509Certificate2.CreateFromPemFile("certs/cert.pem", "certs/key.pem");
-            httpsOptions.ServerCertificate = cert;
+            listenOptions.UseHttps(httpsOptions =>
+            {
+                var cert = X509Certificate2.CreateFromPemFile(certPath, keyPath);
+                httpsOptions.ServerCertificate = cert;
+            });
         });
     });
-});
+}
+else
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(int.Parse(port));
+    });
+}
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
@@ -30,7 +44,7 @@ var app = builder.Build();
 
 app.UseWebSockets(new WebSocketOptions
 {
-    AllowedOrigins = { "https://localhost:4200", "https://localhost:7233" }
+    AllowedOrigins = { "http://localhost:4003", "https://localhost:4200", "https://localhost:7233" }
 });
 
 app.Map("/ws/chat", async (
