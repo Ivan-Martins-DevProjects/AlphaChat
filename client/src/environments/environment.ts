@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://qas-api-alphachat.ivandev.cloud',
-  wsUrl: 'wss://qas-api-alphachat.ivandev.cloud',
+  apiUrl: 'https://api-alphachat.ivandev.cloud',
+  wsUrl: 'wss://api-alphachat.ivandev.cloud',
 };

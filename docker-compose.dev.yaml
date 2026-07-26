@@ -1,0 +1,44 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: alpha_chat
+    ports:
+      - "5432:5432"
+
+  redis:
+    command: >
+      redis-server
+      --user admin on >123456 allcommands allkeys
+    ports:
+      - "6379:6379"
+
+  server:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5126
+      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=alpha_chat;Username=postgres;Password=postgres
+      - Redis__ConnectionString=redis:6379
+      - CorsOrigins__0=http://localhost:4003
+      - Jwt__Key=dev-secret-key-change-in-production
+      - Jwt__Issuer=Development
+      - Jwt__Audience=Backend
+    ports:
+      - "5126:5126"
+
+  websockets:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5272
+      - Redis__ConnectionString=redis:6379
+      - CorsOrigins__0=http://localhost:4003
+    ports:
+      - "5272:5272"
+
+  client:
+    build:
+      args:
+        BUILD_CONFIG: development
+    ports:
+      - "4003:4003"

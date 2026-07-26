@@ -2,10 +2,6 @@ services:
   postgres:
     image: postgres:17
     container_name: alpha_chat_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: alpha_chat
     volumes:
       - ./schemas/dump.sql:/docker-entrypoint-initdb.d/dump.sql
       - postgres_data:/var/lib/postgresql/data
@@ -18,9 +14,6 @@ services:
     container_name: alpha_chat_redis
     volumes:
       - redis_data:/data
-    command: >
-      redis-server
-      --user admin on >123456 allcommands allkeys
     networks:
       - backend
     restart: unless-stopped
@@ -30,14 +23,6 @@ services:
       context: .
       dockerfile: server/Dockerfile
     container_name: alpha_chat_server
-    environment:
-      - ASPNETCORE_URLS=http://+:5126
-      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=alpha_chat;Username=postgres;Password=postgres
-      - Redis__ConnectionString=redis:6379
-      - CorsOrigins__0=http://localhost:4003
-      - CorsOrigins__1=https://qas-alphachat.ivandev.cloud
-    ports:
-      - "5126:5126"
     depends_on:
       - postgres
       - redis
@@ -51,13 +36,6 @@ services:
       context: .
       dockerfile: websockets/Dockerfile
     container_name: alpha_chat_websockets
-    environment:
-      - ASPNETCORE_URLS=http://+:5272
-      - Redis__ConnectionString=redis:6379
-      - CorsOrigins__0=http://localhost:4003
-      - CorsOrigins__1=https://qas-alphachat.ivandev.cloud
-    ports:
-      - "5272:5272"
     depends_on:
       - redis
     networks:
@@ -70,8 +48,6 @@ services:
       context: .
       dockerfile: client/Dockerfile
     container_name: alpha_chat_client
-    ports:
-      - "4003:4003"
     depends_on:
       - server
       - websockets
