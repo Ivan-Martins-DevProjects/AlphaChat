@@ -350,16 +350,18 @@ INSERT INTO tags (id, name, color_code, created_at) VALUES
     ('c1000000-0000-0000-0000-000000000002', 'financeiro', '#f59e0b', NOW() - INTERVAL '30 days'),
     ('c1000000-0000-0000-0000-000000000003', 'suporte', '#3b82f6', NOW() - INTERVAL '30 days'),
     ('c1000000-0000-0000-0000-000000000004', 'feature-request', '#8b5cf6', NOW() - INTERVAL '30 days'),
-    ('c1000000-0000-0000-0000-000000000005', 'vip', '#10b981', NOW() - INTERVAL '30 days')
+    ('c1000000-0000-0000-0000-000000000005', 'vip', '#10b981', NOW() - INTERVAL '30 days'),
+    ('c1000000-0000-0000-0000-000000000006', 'enterprise', '#0ea5e9', NOW() - INTERVAL '30 days'),
+    ('c1000000-0000-0000-0000-000000000007', 'pro', '#f97316', NOW() - INTERVAL '30 days')
 ON CONFLICT (id) DO NOTHING;
 
 -- Contatos
 INSERT INTO contacts (id, name, phone, email, company, document, notes, profile_pic, tags, owner_id, created_at) VALUES
-    ('d1000000-0000-0000-0000-000000000001', 'TechCorp Brasil', '+5511999887766', 'contato@techcorp.com.br', 'TechCorp Ltda', '12.345.678/0001-90', 'Empresa de tecnologia - cliente enterprise', NULL, '["vip", "enterprise"]'::jsonb, 'b2c3d4e5-f6a7-8901-bcde-f12345678901', NOW() - INTERVAL '25 days'),
-    ('d1000000-0000-0000-0000-000000000002', 'StartupXYZ', '+5511988776655', 'suporte@startupxyz.com', 'StartupXYZ Inc', '98.765.432/0001-10', 'Startup em crescimento - plano pro', NULL, '["pro"]'::jsonb, 'c3d4e5f6-a7b8-9012-cdef-123456789012', NOW() - INTERVAL '20 days'),
-    ('d1000000-0000-0000-0000-000000000003', 'Comércio Express', '+5521977665544', 'vendas@comercioexpress.com', 'Comércio Express ME', '45.678.901/0001-23', 'Loja online - integração pagamento', NULL, '["urgente", "financeiro"]'::jsonb, 'd4e5f6a7-b8c9-0123-defa-234567890123', NOW() - INTERVAL '15 days'),
-    ('d1000000-0000-0000-0000-000000000004', 'Digital Agency', '+5531966554433', 'contato@digitalagency.com.br', 'Digital Agency SARL', '67.890.123/0001-45', 'Agência de marketing digital', NULL, '["pro"]'::jsonb, 'e5f6a7b8-c9d0-1234-efab-345678901234', NOW() - INTERVAL '10 days'),
-    ('d1000000-0000-0000-0000-000000000005', 'Indústria ABC', '+5541955443322', 'ti@industriaabc.com', 'Indústria ABC S.A.', '23.456.789/0001-67', 'Indústria de transformação', NULL, '["enterprise"]'::jsonb, 'f6a7b8c9-d0e1-2345-fabc-456789012345', NOW() - INTERVAL '5 days')
+    ('d1000000-0000-0000-0000-000000000001', 'TechCorp Brasil', '+5511999887766', 'contato@techcorp.com.br', 'TechCorp Ltda', '12.345.678/0001-90', 'Empresa de tecnologia - cliente enterprise', NULL, '["c1000000-0000-0000-0000-000000000005", "c1000000-0000-0000-0000-000000000006"]'::jsonb, 'b2c3d4e5-f6a7-8901-bcde-f12345678901', NOW() - INTERVAL '25 days'),
+    ('d1000000-0000-0000-0000-000000000002', 'StartupXYZ', '+5511988776655', 'suporte@startupxyz.com', 'StartupXYZ Inc', '98.765.432/0001-10', 'Startup em crescimento - plano pro', NULL, '["c1000000-0000-0000-0000-000000000007"]'::jsonb, 'c3d4e5f6-a7b8-9012-cdef-123456789012', NOW() - INTERVAL '20 days'),
+    ('d1000000-0000-0000-0000-000000000003', 'Comércio Express', '+5521977665544', 'vendas@comercioexpress.com', 'Comércio Express ME', '45.678.901/0001-23', 'Loja online - integração pagamento', NULL, '["c1000000-0000-0000-0000-000000000001", "c1000000-0000-0000-0000-000000000002"]'::jsonb, 'd4e5f6a7-b8c9-0123-defa-234567890123', NOW() - INTERVAL '15 days'),
+    ('d1000000-0000-0000-0000-000000000004', 'Digital Agency', '+5531966554433', 'contato@digitalagency.com.br', 'Digital Agency SARL', '67.890.123/0001-45', 'Agência de marketing digital', NULL, '["c1000000-0000-0000-0000-000000000007"]'::jsonb, 'e5f6a7b8-c9d0-1234-efab-345678901234', NOW() - INTERVAL '10 days'),
+    ('d1000000-0000-0000-0000-000000000005', 'Indústria ABC', '+5541955443322', 'ti@industriaabc.com', 'Indústria ABC S.A.', '23.456.789/0001-67', 'Indústria de transformação', NULL, '["c1000000-0000-0000-0000-000000000006"]'::jsonb, 'f6a7b8c9-d0e1-2345-fabc-456789012345', NOW() - INTERVAL '5 days')
 ON CONFLICT (id) DO NOTHING;
 
 -- Tickets
