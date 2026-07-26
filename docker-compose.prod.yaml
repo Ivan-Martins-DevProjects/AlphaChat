@@ -6,6 +6,8 @@ services:
       POSTGRES_DB: alpha_chat
     ports:
       - "5432:5432"
+    volumes:
+      - ./schemas/seed_qas.sql:/docker-entrypoint-initdb.d/01_seed.sql
 
   redis:
     command: >
