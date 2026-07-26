@@ -4,71 +4,92 @@ on:
   pull_request:
     branches:
       - develop
-      - main
       - release/**
+      - main
+
   push:
     branches:
-      - develop
       - release/**
+      - main
 
 jobs:
   server-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: 8.0.x
 
-      - name: Restore dependencies
+      - name: Restore
+        working-directory: server
         run: dotnet restore
-        working-directory: server
 
-      - name: Run tests
-        run: dotnet test --no-restore --verbosity normal
+      - name: Test
         working-directory: server
+        run: dotnet test --no-restore --verbosity normal
 
   client-tests:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 22
 
-      - name: Install dependencies
+      - name: Install
+        working-directory: client
         run: npm ci
-        working-directory: client
 
-      - name: Run tests
+      - name: Test
+        working-directory: client
         run: npx ng test
-        working-directory: client
 
-  deploy:
-    needs: [server-tests, client-tests]
+  deploy-homolog:
+    name: Deploy QAS
+      - server-tests
+      - client-tests
+
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
+
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Send webhook notification (main)
-        if: github.ref == 'refs/heads/main'
-        run: |
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          curl --max-time 360 -s -X POST "${{ secrets.DEVELOP_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
+            -d '{
+              "repository":"${{ github.repository }}",
+              "branch":"${{ github.ref_name }}",
+              "commit":"${{ github.sha }}"
+            }'
+
+  deploy-production:
+    name: Deploy Produção
+    needs:
+      - server-tests
+      - client-tests
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
           curl --max-time 360 -s -X POST "${{ secrets.MAIN_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
-            -d '{"repository": "${{ github.repository }}", "branch": "main", "commit": "${{ github.sha }}", "status": "success", "event": "${{ github.event_name }}", "actor": "${{ github.actor }}"}'
-
-      - name: Send webhook notification (develop)
-        if: github.ref == 'refs/heads/develop'
-        run: |
-          curl --max-time 360 -v -X POST "${{ secrets.DEVELOP_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
-            -d '{"repository": "${{ github.repository }}", "branch": "develop", "commit": "${{ github.sha }}", "status": "success", "event": "${{ github.event_name }}", "actor": "${{ github.actor }}"}'
+            -d '{
+              "repository":"${{ github.repository }}",
+              "branch":"main",
+              "commit":"${{ github.sha }}"
+            }'
