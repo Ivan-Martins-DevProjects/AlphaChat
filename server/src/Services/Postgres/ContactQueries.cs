@@ -130,7 +130,7 @@ public static class ContactQueries
 
     public static readonly string CreateContactSql = @"
         INSERT INTO contacts (id, name, phone, email, company, document, notes, tags, created_at, updated_at)
-        VALUES (@id, @name, @phone, @email, @company, @document, @notes, @tags, NOW(), NOW())
+        VALUES (@id, @name, @phone, @email, @company, @document, @notes, @tags::jsonb, NOW(), NOW())
         RETURNING id";
 
     public static readonly string DeleteContactTagsSql = @"
