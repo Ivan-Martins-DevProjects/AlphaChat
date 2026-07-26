@@ -29,7 +29,7 @@ public static class AuthQueries
             Name = reader.GetString(1),
             Email = reader.GetString(2),
             Role = reader.GetString(3),
-            ProfilePic = reader.GetString(4),
+            ProfilePic = reader.IsDBNull(4) ? null : reader.GetString(4),
         };
     }
 
