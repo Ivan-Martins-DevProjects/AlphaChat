@@ -1,7 +1,8 @@
 -- ============================================================
 -- AlphaChat - Seed Data para ambiente QAS
--- Usa apenas tabelas criadas pelo dump.sql:
---   users, tickets, messages, ticket_participants, ticket_events
+-- Tabelas: users, tickets, messages, ticket_participants
+-- Nota: migrations 001/002 rodam antes (convertem enum para VARCHAR,
+--       renomeiam message->content, criam conversations/contacts/tags)
 -- ============================================================
 
 -- ============================================================
@@ -42,31 +43,31 @@ ON CONFLICT (ticket_id, user_id) DO NOTHING;
 -- ============================================================
 
 -- Ticket 1: Maria - Plano Enterprise
-INSERT INTO messages (id, ticket_id, sender_id, message, created_at, edited_at) VALUES
-    ('1c000000-0000-0000-0000-000000000001', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Olá! Aqui é a Maria da AlphaChat. Como posso ajudar?', NOW() - INTERVAL '2 hours', NULL),
-    ('1c000000-0000-0000-0000-000000000002', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Vi que você tem interesse no plano Enterprise. Posso te explicar as vantagens?', NOW() - INTERVAL '1 hour 55 minutes', NULL),
-    ('1c000000-0000-0000-0000-000000000003', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'O plano Enterprise inclui: suporte 24/7, SLA de 1 hora, integrações ilimitadas.', NOW() - INTERVAL '1 hour 50 minutes', NULL),
-    ('1c000000-0000-0000-0000-000000000004', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'O valor é R$ 499,90/mês. Posso enviar a proposta?', NOW() - INTERVAL '1 hour 40 minutes', NULL),
-    ('1c000000-0000-0000-0000-000000000005', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Perfeito! Vou enviar a proposta agora.', NOW() - INTERVAL '5 minutes', NULL)
+INSERT INTO messages (id, ticket_id, sender_id, content, conversation_id, message_type, is_edited, is_deleted, created_at) VALUES
+    ('1c000000-0000-0000-0000-000000000001', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Olá! Aqui é a Maria da AlphaChat. Como posso ajudar?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '2 hours'),
+    ('1c000000-0000-0000-0000-000000000002', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Vi que você tem interesse no plano Enterprise. Posso te explicar as vantagens?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '1 hour 55 minutes'),
+    ('1c000000-0000-0000-0000-000000000003', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'O plano Enterprise inclui: suporte 24/7, SLA de 1 hora, integrações ilimitadas.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '1 hour 50 minutes'),
+    ('1c000000-0000-0000-0000-000000000004', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'O valor é R$ 499,90/mês. Posso enviar a proposta?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '1 hour 40 minutes'),
+    ('1c000000-0000-0000-0000-000000000005', '1a000000-0000-0000-0000-000000000001', 'b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Perfeito! Vou enviar a proposta agora.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '5 minutes')
 ON CONFLICT (id) DO NOTHING;
 
 -- Ticket 2: João - Erro Pagamento
-INSERT INTO messages (id, ticket_id, sender_id, message, created_at, edited_at) VALUES
-    ('2c000000-0000-0000-0000-000000000011', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Olá! Vi que está com problema na integração de pagamento.', NOW() - INTERVAL '1 day', NULL),
-    ('2c000000-0000-0000-0000-000000000012', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Pode me enviar o ID da transação que está falhando?', NOW() - INTERVAL '23 hours', NULL),
-    ('2c000000-0000-0000-0000-000000000013', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Encontrei o problema! Timeout na requisição. Vou ajustar para 30s.', NOW() - INTERVAL '20 hours', NULL),
-    ('2c000000-0000-0000-0000-000000000014', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Ajuste realizado. Pode testar novamente?', NOW() - INTERVAL '2 hours', NULL)
+INSERT INTO messages (id, ticket_id, sender_id, content, conversation_id, message_type, is_edited, is_deleted, created_at) VALUES
+    ('2c000000-0000-0000-0000-000000000011', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Olá! Vi que está com problema na integração de pagamento.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '1 day'),
+    ('2c000000-0000-0000-0000-000000000012', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Pode me enviar o ID da transação que está falhando?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '23 hours'),
+    ('2c000000-0000-0000-0000-000000000013', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Encontrei o problema! Timeout na requisição. Vou ajustar para 30s.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '20 hours'),
+    ('2c000000-0000-0000-0000-000000000014', '2a000000-0000-0000-0000-000000000002', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Ajuste realizado. Pode testar novamente?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '2 hours')
 ON CONFLICT (id) DO NOTHING;
 
 -- Ticket 3: Ana - Sugestão
-INSERT INTO messages (id, ticket_id, sender_id, message, created_at, edited_at) VALUES
-    ('3c000000-0000-0000-0000-000000000021', '3a000000-0000-0000-0000-000000000003', 'd4e5f6a7-b8c9-0123-defa-234567890123', 'Olá! Recebi sua sugestão de funcionalidade.', NOW() - INTERVAL '3 hours', NULL),
-    ('3c000000-0000-0000-0000-000000000022', '3a000000-0000-0000-0000-000000000003', 'd4e5f6a7-b8c9-0123-defa-234567890123', 'O relatório de vendas mensal é uma ótima ideia. Vou encaminhar para produto.', NOW() - INTERVAL '1 hour', NULL)
+INSERT INTO messages (id, ticket_id, sender_id, content, conversation_id, message_type, is_edited, is_deleted, created_at) VALUES
+    ('3c000000-0000-0000-0000-000000000021', '3a000000-0000-0000-0000-000000000003', 'd4e5f6a7-b8c9-0123-defa-234567890123', 'Olá! Recebi sua sugestão de funcionalidade.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '3 hours'),
+    ('3c000000-0000-0000-0000-000000000022', '3a000000-0000-0000-0000-000000000003', 'd4e5f6a7-b8c9-0123-defa-234567890123', 'O relatório de vendas mensal é uma ótima ideia. Vou encaminhar para produto.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '1 hour')
 ON CONFLICT (id) DO NOTHING;
 
 -- Ticket 5: João - Acesso
-INSERT INTO messages (id, ticket_id, sender_id, message, created_at, edited_at) VALUES
-    ('5c000000-0000-0000-0000-000000000031', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Olá! Vi que está com problema de acesso.', NOW() - INTERVAL '30 minutes', NULL),
-    ('5c000000-0000-0000-0000-000000000032', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Vou verificar. Pode me informar seu email?', NOW() - INTERVAL '25 minutes', NULL),
-    ('5c000000-0000-0000-0000-000000000033', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Encontrei! IP bloqueado por excesso de tentativas. Desbloqueado.', NOW() - INTERVAL '10 minutes', NULL)
+INSERT INTO messages (id, ticket_id, sender_id, content, conversation_id, message_type, is_edited, is_deleted, created_at) VALUES
+    ('5c000000-0000-0000-0000-000000000031', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Olá! Vi que está com problema de acesso.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '30 minutes'),
+    ('5c000000-0000-0000-0000-000000000032', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Vou verificar. Pode me informar seu email?', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '25 minutes'),
+    ('5c000000-0000-0000-0000-000000000033', '5a000000-0000-0000-0000-000000000005', 'c3d4e5f6-a7b8-9012-cdef-123456789012', 'Encontrei! IP bloqueado por excesso de tentativas. Desbloqueado.', NULL, 'text', FALSE, FALSE, NOW() - INTERVAL '10 minutes')
 ON CONFLICT (id) DO NOTHING;

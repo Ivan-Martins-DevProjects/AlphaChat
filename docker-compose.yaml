@@ -3,7 +3,9 @@ services:
     image: postgres:17
     container_name: alpha_chat_db
     volumes:
-      - ./schemas/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./schemas/dump.sql:/docker-entrypoint-initdb.d/00_dump.sql
+      - ./server/src/Services/Postgres/Migrations/001_create_roles_and_permissions.sql:/docker-entrypoint-initdb.d/01_migrations.sql
+      - ./server/src/Services/Postgres/Migrations/002_add_missing_tables_and_columns.sql:/docker-entrypoint-initdb.d/02_tables.sql
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend
