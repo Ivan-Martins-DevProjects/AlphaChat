@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TagItem } from '../../../models/ticket-card';
 import { ChatService, ContactDetail } from '../../../services/chat';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-contact-modal',

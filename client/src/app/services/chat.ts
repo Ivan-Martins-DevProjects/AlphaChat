@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TicketCard, TagItem } from '../models/ticket-card';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { MessageCreatedEvent, WebSocketService } from './websocket';
 
 export interface MessageRow {

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChatService, ContactDetail } from '../../services/chat';
 import { TagItem } from '../../models/ticket-card';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { EditContactModal } from '../../components/modal/edit-contact-modal/edit-contact-modal';
 import { SendMessageModal } from '../../components/modal/send-message-modal/send-message-modal';
 import { CreateContactModal } from '../../components/modal/create-contact-modal/create-contact-modal';

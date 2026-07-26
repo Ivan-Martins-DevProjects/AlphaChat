@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Conversations } from '../../components/inbox/conversations/conversations';
 import { ChatContent } from '../../components/inbox/chat-content/chat-content';
 import { TicketCard } from '../../models/ticket-card';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { WebSocketService } from '../../services/websocket';
 import { ChatService } from '../../services/chat';
 import { Subscription } from 'rxjs';
