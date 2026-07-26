@@ -23,7 +23,6 @@ publish/
 
 # Secrets
 .env
-appsettings.Development.json
 secrets.json
 
 # NuGet
