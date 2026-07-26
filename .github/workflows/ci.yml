@@ -50,8 +50,7 @@ jobs:
         run: npx ng test
 
   deploy-homolog:
-    name: Deploy Homologação
-    needs:
+    name: Deploy QAS
       - server-tests
       - client-tests
 
@@ -63,7 +62,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - run: |
-          curl --max-time 360 -s -X POST "${{ secrets.HOMOLOG_WEBHOOK_URL }}" \
+          curl --max-time 360 -s -X POST "${{ secrets.DEVELOP_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
             -d '{
