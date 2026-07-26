@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { EditContactModal } from '../../components/modal/edit-contact-modal/edit-contact-modal';
 import { SendMessageModal } from '../../components/modal/send-message-modal/send-message-modal';
 import { CreateContactModal } from '../../components/modal/create-contact-modal/create-contact-modal';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-list-all-contacts',
@@ -52,7 +53,8 @@ export class ListAllContacts implements OnInit {
   constructor(
     private chatService: ChatService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -74,9 +76,8 @@ export class ListAllContacts implements OnInit {
 
   async loadCompanies() {
     try {
-      const response = await fetch(
-        `${environment.apiUrl}/api/contact/companies`,
-        { credentials: 'include' }
+      const response = await this.authService.fetch(
+        `${environment.apiUrl}/api/contact/companies`
       );
 
       if (!response.ok) {
@@ -103,9 +104,8 @@ export class ListAllContacts implements OnInit {
       if (this.selectedCompany) params.append('company', this.selectedCompany);
       if (this.selectedTagId) params.append('tagId', this.selectedTagId);
 
-      const response = await fetch(
-        `${environment.apiUrl}/api/contact/all?${params.toString()}`,
-        { credentials: 'include' }
+      const response = await this.authService.fetch(
+        `${environment.apiUrl}/api/contact/all?${params.toString()}`
       );
 
       if (!response.ok) {

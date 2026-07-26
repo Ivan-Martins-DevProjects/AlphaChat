@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat';
 import { TagItem } from '../../../models/ticket-card';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-create-contact-modal',
@@ -30,7 +31,8 @@ export class CreateContactModal {
 
   constructor(
     private chatService: ChatService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {
     this.loadTags();
   }
@@ -78,9 +80,8 @@ export class CreateContactModal {
     this.cdr.detectChanges();
 
     try {
-      const response = await fetch(`${environment.apiUrl}/api/contact`, {
+      const response = await this.authService.fetch(`${environment.apiUrl}/api/contact`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: this.name.trim(),

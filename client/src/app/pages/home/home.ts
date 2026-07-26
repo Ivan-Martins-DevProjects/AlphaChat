@@ -7,6 +7,7 @@ import { TicketCard } from '../../models/ticket-card';
 import { environment } from '../../../environments/environment';
 import { WebSocketService } from '../../services/websocket';
 import { ChatService } from '../../services/chat';
+import { AuthService } from '../../services/auth';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -36,7 +37,8 @@ export class Home implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private wsService: WebSocketService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -56,15 +58,9 @@ export class Home implements OnInit, OnDestroy {
 
   async loadConversations() {
     try {
-      const response = await fetch(`${environment.apiUrl}/api/home?offset=${this.offset}&limit=${this.PAGE_SIZE}`, {
+      const response = await this.authService.fetch(`${environment.apiUrl}/api/home?offset=${this.offset}&limit=${this.PAGE_SIZE}`, {
         method: 'GET',
-        credentials: 'include',
       });
-
-      if (response.status === 401) {
-        this.router.navigate(['/login']);
-        return;
-      }
 
       if (!response.ok) {
         const errorText = await response.text();
