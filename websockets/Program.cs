@@ -25,10 +25,12 @@ var app = builder.Build();
 var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>()
     ?? new[] { "http://localhost:4003" };
 
-app.UseWebSockets(new WebSocketOptions
+var wsOptions = new WebSocketOptions();
+foreach (var origin in corsOrigins)
 {
-    AllowedOrigins = { corsOrigins }
-});
+    wsOptions.AllowedOrigins.Add(origin);
+}
+app.UseWebSockets(wsOptions);
 
 app.Map("/ws/chat", async (
     HttpContext context,
