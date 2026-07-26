@@ -60,7 +60,7 @@ jobs:
       - name: Send webhook notification (main)
         if: github.ref == 'refs/heads/main'
         run: |
-          curl -s -X POST "${{ secrets.MAIN_WEBHOOK_URL }}" \
+          curl --max-time 360 -s -X POST "${{ secrets.MAIN_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
             -d '{"repository": "${{ github.repository }}", "branch": "main", "commit": "${{ github.sha }}", "status": "success", "event": "${{ github.event_name }}", "actor": "${{ github.actor }}"}'
@@ -68,7 +68,7 @@ jobs:
       - name: Send webhook notification (develop)
         if: github.ref == 'refs/heads/develop'
         run: |
-          curl -v -X POST "${{ secrets.DEVELOP_WEBHOOK_URL }}" \
+          curl --max-time 360 -v -X POST "${{ secrets.DEVELOP_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_AUTH_TOKEN }}" \
             -d '{"repository": "${{ github.repository }}", "branch": "develop", "commit": "${{ github.sha }}", "status": "success", "event": "${{ github.event_name }}", "actor": "${{ github.actor }}"}'
