@@ -23,7 +23,7 @@ services:
       - ConnectionStrings__Default=Host=postgres;Port=5432;Database=alpha_chat;Username=postgres;Password=postgres_prod_placeholder
       - Redis__ConnectionString=redis:6379
       - CorsOrigins__0=https://alphachat.ivandev.cloud
-      - Jwt__Key=prod-jwt-secret-placeholder
+      - Jwt__Key=prod-jwt-secret-must-be-at-least-32-chars
       - Jwt__Issuer=Production
       - Jwt__Audience=Backend
     ports:
