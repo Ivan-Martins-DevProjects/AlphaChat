@@ -22,9 +22,12 @@ builder.Services.AddHostedService<RedisSubscribeWorker>();
 
 var app = builder.Build();
 
+var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:4003" };
+
 app.UseWebSockets(new WebSocketOptions
 {
-    AllowedOrigins = { "http://localhost:4003", "http://localhost:4200", "http://localhost:5272" }
+    AllowedOrigins = { corsOrigins }
 });
 
 app.Map("/ws/chat", async (

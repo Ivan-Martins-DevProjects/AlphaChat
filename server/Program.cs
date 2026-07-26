@@ -53,7 +53,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://localhost:4003")
+        var origins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>()
+            ?? new[] { "http://localhost:4003" };
+        policy.WithOrigins(origins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
