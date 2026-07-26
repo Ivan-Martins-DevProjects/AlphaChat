@@ -3,7 +3,8 @@ WORKDIR /app
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ .
-RUN npx ng build --configuration production
+ARG BUILD_CONFIG=production
+RUN npx ng build --configuration $BUILD_CONFIG
 
 FROM nginx:alpine
 COPY client/nginx.conf /etc/nginx/conf.d/default.conf

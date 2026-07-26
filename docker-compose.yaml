@@ -2,66 +2,66 @@ services:
   postgres:
     image: postgres:17
     container_name: alpha_chat_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: alpha_chat
-    ports:
-      - "5432:5432"
     volumes:
-      - ./schemas/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./schemas/dump.sql:/docker-entrypoint-initdb.d/01_init.sql
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     container_name: alpha_chat_redis
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
-    command: >
-      redis-server
-      --user admin on >123456 allcommands allkeys
+    networks:
+      - backend
+    restart: unless-stopped
 
   server:
     build:
       context: .
       dockerfile: server/Dockerfile
     container_name: alpha_chat_server
-    environment:
-      - ASPNETCORE_URLS=http://+:5126
-      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=alpha_chat;Username=postgres;Password=postgres
-      - Redis__ConnectionString=redis:6379
-    ports:
-      - "5126:5126"
     depends_on:
       - postgres
       - redis
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
 
   websockets:
     build:
       context: .
       dockerfile: websockets/Dockerfile
     container_name: alpha_chat_websockets
-    environment:
-      - ASPNETCORE_URLS=http://+:5272
-      - Redis__ConnectionString=redis:6379
-    ports:
-      - "5272:5272"
     depends_on:
       - redis
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
 
   client:
     build:
       context: .
       dockerfile: client/Dockerfile
     container_name: alpha_chat_client
-    ports:
-      - "4003:4003"
     depends_on:
       - server
       - websockets
+    networks:
+      - frontend
+    restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  backend:
+    driver: bridge
+    internal: true
+  frontend:
+    driver: bridge

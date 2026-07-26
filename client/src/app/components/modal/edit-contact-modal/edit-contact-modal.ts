@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TagItem } from '../../../models/ticket-card';
 import { ChatService, ContactDetail } from '../../../services/chat';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-edit-contact-modal',
@@ -36,7 +37,8 @@ export class EditContactModal implements OnInit {
 
   constructor(
     private chatService: ChatService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -135,9 +137,8 @@ export class EditContactModal implements OnInit {
     this.cdr.detectChanges();
 
     try {
-      const response = await fetch(`${environment.apiUrl}/api/contact/${this.contactId}/assume`, {
+      const response = await this.authService.fetch(`${environment.apiUrl}/api/contact/${this.contactId}/assume`, {
         method: 'POST',
-        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -169,9 +170,8 @@ export class EditContactModal implements OnInit {
     if (!this.contactId || !this.contact) return;
 
     try {
-      const response = await fetch(`${environment.apiUrl}/api/contact/${this.contactId}/owner`, {
+      const response = await this.authService.fetch(`${environment.apiUrl}/api/contact/${this.contactId}/owner`, {
         method: 'DELETE',
-        credentials: 'include',
       });
 
       if (!response.ok) {

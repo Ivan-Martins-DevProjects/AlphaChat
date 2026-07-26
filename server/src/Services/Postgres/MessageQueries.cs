@@ -20,8 +20,8 @@ public static class MessageQueries
         OFFSET @offset";
 
     public static readonly string InsertMessageSql = @"
-        INSERT INTO messages (id, conversation_id, sender_id, content, message_type, is_edited, is_deleted, created_at)
-        VALUES (@id, @conversationId, @senderId, @content, @messageType, @isEdited, @isDeleted, @createdAt)";
+        INSERT INTO messages (id, conversation_id, sender_id, content, message_type, is_edited, is_deleted, created_at, ticket_id)
+        VALUES (@id, @conversationId, @senderId, @content, @messageType, @isEdited, @isDeleted, @createdAt, @ticketId)";
 
     public static readonly string MarkConversationUnreadSql = @"
         UPDATE conversations
@@ -75,6 +75,14 @@ public static class MessageQueries
 
         await using var conn = await dataSource.OpenConnectionAsync();
 
+        // Look up the ticket_id from the conversation
+        await using var lookupCmd = new NpgsqlCommand(@"
+            SELECT t.id FROM conversations c
+            INNER JOIN tickets t ON t.id = c.ticket_id
+            WHERE c.id = @conversationId", conn);
+        lookupCmd.Parameters.AddWithValue("@conversationId", conversationId);
+        var ticketId = await lookupCmd.ExecuteScalarAsync();
+
         await using var cmd = new NpgsqlCommand(InsertMessageSql, conn);
         cmd.Parameters.AddWithValue("@id", message.Id);
         cmd.Parameters.AddWithValue("@conversationId", message.ConversationId);
@@ -84,6 +92,7 @@ public static class MessageQueries
         cmd.Parameters.AddWithValue("@isEdited", message.IsEdited);
         cmd.Parameters.AddWithValue("@isDeleted", message.IsDeleted);
         cmd.Parameters.AddWithValue("@createdAt", message.CreatedAt);
+        cmd.Parameters.AddWithValue("@ticketId", ticketId ?? DBNull.Value);
         await cmd.ExecuteNonQueryAsync();
 
         await using var updateCmd = new NpgsqlCommand(MarkConversationUnreadSql, conn);

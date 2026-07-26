@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TicketCard, TagItem } from '../models/ticket-card';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { MessageCreatedEvent, WebSocketService } from './websocket';
+import { AuthService } from './auth';
 
 export interface MessageRow {
   id: string;
@@ -77,7 +78,7 @@ export class ChatService {
   highlightChanged = this.highlightChanged$.asObservable();
   newMessageFromWs = this.newMessageFromWs$.asObservable();
 
-  constructor(private wsService: WebSocketService) {
+  constructor(private wsService: WebSocketService, private authService: AuthService) {
     this.wsService.messageCreated.subscribe(event => {
       console.log('[ChatService] messageCreated recebido:', event);
       this.highlightedConversations.add(event.conversationId);
@@ -110,9 +111,9 @@ export class ChatService {
   }
 
   async getMessages(conversationId: string, offset: number): Promise<ChatMessagesResponse> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/Chat?conversationId=${conversationId}&offset=${offset}&_t=${Date.now()}`,
-      { credentials: 'include', cache: 'no-store' }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
@@ -123,9 +124,9 @@ export class ChatService {
   }
 
   async getContactDetail(conversationId: string): Promise<ContactDetail> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/contact/${conversationId}?_t=${Date.now()}`,
-      { credentials: 'include', cache: 'no-store' }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
@@ -136,9 +137,9 @@ export class ChatService {
   }
 
   async getUsers(): Promise<PlatformUser[]> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/contact/users?_t=${Date.now()}`,
-      { credentials: 'include', cache: 'no-store' }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
@@ -149,9 +150,9 @@ export class ChatService {
   }
 
   async getTags(): Promise<TagItem[]> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/contact/tags?_t=${Date.now()}`,
-      { credentials: 'include', cache: 'no-store' }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
@@ -173,11 +174,10 @@ export class ChatService {
     ticketSubject?: string;
     ticketStatus?: string;
   }): Promise<void> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/contact/${conversationId}`,
       {
         method: 'PUT',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }
@@ -189,9 +189,9 @@ export class ChatService {
   }
 
   async getContactTickets(contactId: string): Promise<ContactTicket[]> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/contact/${contactId}/tickets?_t=${Date.now()}`,
-      { credentials: 'include', cache: 'no-store' }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
@@ -202,21 +202,19 @@ export class ChatService {
   }
 
   async markAsRead(conversationId: string): Promise<void> {
-    await fetch(
+    await this.authService.fetch(
       `${environment.apiUrl}/api/chat/${conversationId}/read`,
       {
         method: 'PUT',
-        credentials: 'include',
       }
     );
   }
 
   async sendMessage(conversationId: string, content: string, messageType: string = 'text'): Promise<MessageRow> {
-    const response = await fetch(
+    const response = await this.authService.fetch(
       `${environment.apiUrl}/api/chat`,
       {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ conversationId, content, messageType }),
       }

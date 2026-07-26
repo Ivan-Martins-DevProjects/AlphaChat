@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 export interface MessageCreatedEvent {
   type: 'message_created';

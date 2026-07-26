@@ -63,8 +63,8 @@ public static class ConversationQueries
         WHERE id = @conversationId";
 
     public static readonly string CreateConversationSql = @"
-        INSERT INTO tickets (id, subject, status, contact_id, created_at)
-        VALUES (@ticketId, @subject, 'open', @contactId, NOW())
+        INSERT INTO tickets (id, subject, status, contact_id, customer_id, created_at)
+        VALUES (@ticketId, @subject, 'open', @contactId, @customerId, NOW())
         RETURNING id";
 
     public static readonly string InsertConversationSql = @"
@@ -182,6 +182,8 @@ public static class ConversationQueries
             ticketIdParam.Value = ticketId;
             ticketCmd.Parameters.AddWithValue("@subject", "Nova conversa");
             ticketCmd.Parameters.AddWithValue("@contactId", contactId);
+            var customerIdParam = ticketCmd.Parameters.Add("@customerId", NpgsqlDbType.Uuid);
+            customerIdParam.Value = (object?)ownerId ?? DBNull.Value;
             await ticketCmd.ExecuteScalarAsync();
 
             await using var convCmd = new NpgsqlCommand(InsertConversationSql, conn, transaction);

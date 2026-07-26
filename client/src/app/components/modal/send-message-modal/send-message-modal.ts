@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChatService } from '../../../services/chat';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-send-message-modal',
@@ -26,7 +27,8 @@ export class SendMessageModal {
   constructor(
     private chatService: ChatService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
 
   onClose() {
@@ -46,9 +48,8 @@ export class SendMessageModal {
     this.cdr.detectChanges();
 
     try {
-      const checkResponse = await fetch(
-        `${environment.apiUrl}/api/contact/${this.contactId}/open-ticket`,
-        { credentials: 'include' }
+      const checkResponse = await this.authService.fetch(
+        `${environment.apiUrl}/api/contact/${this.contactId}/open-ticket`
       );
 
       if (checkResponse.ok) {
@@ -74,9 +75,8 @@ export class SendMessageModal {
 
   async createConversationAndSend() {
     try {
-      const response = await fetch(`${environment.apiUrl}/api/chat/conversation`, {
+      const response = await this.authService.fetch(`${environment.apiUrl}/api/chat/conversation`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contactId: this.contactId }),
       });
